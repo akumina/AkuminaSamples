@@ -5,7 +5,7 @@ To run this sample download or clone repository compile the source then copy the
 If you run the sample as it is then modify the following
 UNITY.CONFIG
 
- <register type="IRepository[UserToken]" mapTo="AzureTableTokenStore" />
+ &lt;register type="IRepository[UserToken]" mapTo="AzureTableTokenStore" /&gt;
  TO
  <register type="IRepository[UserToken]" mapTo="Akumina.Samples.TokenStore.NtFileTokenStore, Akumina.Samples.TokenStore" />
  
