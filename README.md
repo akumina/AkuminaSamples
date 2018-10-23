@@ -1,10 +1,8 @@
-This sample provides customer to write custom token store for storing graph/sharepoint tokens.  
+This sample provides customer to write custom token store for storing graph/SharePoint tokens.
 
-To run this sample download or clone repository compile the source then copy the assemly Akumina.Samples.TokenStore.dll to your AppManager web site bin folder
+To run this sample download or clone repository, compile the source then copy the assembly Akumina.Samples.TokenStore.dll to your AppManager website bin folder
 
-
-If you run the sample as it is then modify the following
-UNITY.CONFIG
+If you run the sample as it is, then update the UNITY.CONFIG as shown below
 
  &lt;register type="IRepository[UserToken]" mapTo="AzureTableTokenStore" /&gt;
  
