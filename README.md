@@ -7,6 +7,6 @@ UNITY.CONFIG
 
  &lt;register type="IRepository[UserToken]" mapTo="AzureTableTokenStore" /&gt;
  TO
- <register type="IRepository[UserToken]" mapTo="Akumina.Samples.TokenStore.NtFileTokenStore, Akumina.Samples.TokenStore" />
+ &lt;register type="IRepository[UserToken]" mapTo="Akumina.Samples.TokenStore.NtFileTokenStore, Akumina.Samples.TokenStore" /&gt;
  
  NOTE:  This sample has path hard coded to c:\\Temp\\ , change this path to your desired path before compilation.
