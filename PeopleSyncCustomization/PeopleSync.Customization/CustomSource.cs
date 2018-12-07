@@ -3,12 +3,17 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Akumina.PeopleSync.Core;
 using Akumina.PeopleSync.Core.Entities;
+using Akumina.PeopleSync.Core.Implementation;
 using Akumina.PeopleSync.Core.Interfaces;
 
 namespace PeopleSync.Customization
 {
-    public class CustomSource : ISyncSource
+    public class CustomSource : AadSyncBase, ISyncSource
     {
+        public CustomSource(SyncRequest syncRequest)
+        {
+            Configuration = syncRequest;
+        }
         public QueryResult QueryUsers(string resourceSet, string nextLink, ICollection<string> objectClassList, ICollection<string> propertyList)
         {
             throw new NotImplementedException();
