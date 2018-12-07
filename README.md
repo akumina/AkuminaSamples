@@ -1,3 +1,12 @@
+<b>PeopleSyncCustomization</b>
+
+To customize the data source provide implementation to customsource.cs, compile and copy the output to where peoplesync exe is running.  
+
+Open the config.json modify the property "SyncSourceAssemblyType": "CustomSource, PeopleSync.Customization",
+
+
+<b>Token Store</b>
+
 This sample provides customer to write custom token store for storing graph/SharePoint tokens.
 
 To run this sample download or clone repository, compile the source then copy the assembly Akumina.Samples.TokenStore.dll to your AppManager website bin folder
