@@ -21,67 +21,67 @@ namespace PeopleSync.Customization
 
         public QueryResult QueryGroups(string resourceSet, string nextLink, ICollection<string> objectClassList, ICollection<string> propertyList)
         {
-            throw new NotImplementedException();
+            return null;
         }
 
         public string FetchGroupExtensions(string lastExtensionLink, List<KeyValuePair<string, (string CreationDate, string Visibility, string Tags, string Types)>> groupExtensions)
         {
-            throw new NotImplementedException();
+            return "";
         }
 
         public Dictionary<string, string> GetData(string objectId, dynamic client, SyncTask.ProcessTask callback)
         {
-            throw new NotImplementedException();
+            return new Dictionary<string, string>();
         }
 
-        public Task<Dictionary<string, string>> GetAssignedLicenses(string objectId, dynamic client)
+        public async Task<Dictionary<string, string>> GetAssignedLicenses(string objectId, dynamic client)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => new Dictionary<string, string>());
         }
 
-        public Task<Dictionary<string, string>> GetAppRoleAssignments(string objectId, dynamic client)
+        public async Task<Dictionary<string, string>> GetAppRoleAssignments(string objectId, dynamic client)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => new Dictionary<string, string>());
         }
 
-        public Task<Dictionary<string, string>> GetDirectReports(string objectId, dynamic client)
+        public async Task<Dictionary<string, string>> GetDirectReports(string objectId, dynamic client)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => new Dictionary<string, string>());
         }
 
-        public Task<Dictionary<string, string>> GetOwnedDevices(string objectId, dynamic client)
+        public async Task<Dictionary<string, string>> GetOwnedDevices(string objectId, dynamic client)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => new Dictionary<string, string>());
         }
 
-        public Task<Dictionary<string, string>> GetRegisteredDevices(string objectId, dynamic client)
+        public async Task<Dictionary<string, string>> GetRegisteredDevices(string objectId, dynamic client)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => new Dictionary<string, string>());
         }
 
-        public Task<Dictionary<string, string>> GetExtendedProperties(string objectId, dynamic client)
+        public async Task<Dictionary<string, string>> GetExtendedProperties(string objectId, dynamic client)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => new Dictionary<string, string>());
         }
 
-        public Task<Dictionary<string, string>> GetManager(string objectId, dynamic client)
+        public async Task<Dictionary<string, string>> GetManager(string objectId, dynamic client)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => new Dictionary<string, string>());
         }
 
-        public Task<Dictionary<string, string>> GetGroupMembers(string objectId, dynamic client)
+        public async Task<Dictionary<string, string>> GetGroupMembers(string objectId, dynamic client)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => new Dictionary<string, string>());
         }
 
-        public Task<Dictionary<string, string>> GetExtendedPropertiesForGroup(string objectId, dynamic client)
+        public async Task<Dictionary<string, string>> GetExtendedPropertiesForGroup(string objectId, dynamic client)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => new Dictionary<string, string>());
         }
 
-        public Task<Dictionary<string, string>> OnPremisesExtensionAttributes(string objectId, dynamic client)
+        public async Task<Dictionary<string, string>> OnPremisesExtensionAttributes(string objectId, dynamic client)
         {
-            throw new NotImplementedException();
+            return await Task.Run(() => new Dictionary<string, string>());
         }
     }
 }
