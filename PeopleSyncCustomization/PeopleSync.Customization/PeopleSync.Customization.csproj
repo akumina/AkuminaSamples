@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="DocumentFormat.OpenXml" Version="2.8.1" />
     <PackageReference Include="Microsoft.Azure.ActiveDirectory.GraphClient" Version="2.1.1" />
     <PackageReference Include="Microsoft.Azure.KeyVault.Core" Version="3.0.0-alpha" />
     <PackageReference Include="Microsoft.Azure.KeyVault.Extensions" Version="2.0.4" />
