@@ -101,18 +101,17 @@ namespace PeopleSync.Customization
                 var workSheet = worksheetPart.Worksheet;
                 var sheetData = workSheet.GetFirstChild<SheetData>();
                 var rows = sheetData.Descendants<Row>();
-                if (rows == null) return result;
+                if (!(rows != null && rows.Any())) return result;
+                var header = rows.ElementAt(0);
                 foreach (var row in rows)
                 {
-                    var header = rows.ElementAt(0);
                     if (row.RowIndex.Value == 1) continue;
                     var entry = new Dictionary<string, string>();
                     for (var i = 0; i < row.Descendants<Cell>().Count(); i++)
                     {
-                        var str = GetCellValue(spreadSheetDocument, header.Descendants<Cell>().ElementAt(i));
-
-                        var str1 = GetCellValue(spreadSheetDocument, row.Descendants<Cell>().ElementAt(i));
-                        entry.Add(str.Replace("(","").Replace( ")",""), str1);
+                        var key = GetCellValue(spreadSheetDocument, header.Descendants<Cell>().ElementAt(i));
+                        var val = GetCellValue(spreadSheetDocument, row.Descendants<Cell>().ElementAt(i));
+                        entry.Add(key.Replace("(", "").Replace(")", ""), val);
                     }
                     entry.Add("objectId", entry["EmployeeID"]);
                     entry.Add("odata.type", "Microsoft.DirectoryServices.User");
