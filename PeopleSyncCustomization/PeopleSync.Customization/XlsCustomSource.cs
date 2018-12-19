@@ -9,11 +9,42 @@ using System.Linq;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Newtonsoft.Json.Linq;
+using System.Text.RegularExpressions;
 
 namespace PeopleSync.Customization
 {
     public class XlsCustomSource : AadSyncBase, ISyncSource
     {
+        private static readonly Dictionary<string, string> MappingFields = new Dictionary<string, string>()
+        {
+            {"CostCenter","Customattribute1"},
+            {"HRCostCenterDescription","CustomAttribute2"},
+            {"WorkLocation","WorkLocation"},
+            {"State","state"},
+            {"EmployeeID","employeeId"},
+            {"FirstName","givenName"},
+            {"LastName","surname"},
+            {"PrimaryTelephoneNumber(Work)","telephoneNumber"},
+            {"Email","mail"},
+            {"PrimaryIndustry","CustomAttribute4"},
+            {"SecondaryIndustry","CustomAttribute5"},
+            {"ServiceLine","CustomAttribute6"},
+            {"JobFamily","CustomAttribute7"},
+            {"IsCPA","CustomAttribute8"},
+            {"Region","CustomAttribute9"},
+            {"Subregion","CustomAttribute10"},
+            {"SkillType","CustomAttribute11"},
+            {"JobTitle","jobTitle"},
+            {"PreferredName","displayName"},
+            {"Manager","manager"},
+            {"Address1","StreetAddress"},
+            {"City","city"},
+            {"Zip","PostalCode"},
+            {"FaxNumber","FacsimileTelephoneNumber"},
+            {"Department","department"},
+           };
+
+
         public XlsCustomSource(SyncRequest syncRequest)
         {
             Configuration = syncRequest;
@@ -103,24 +134,43 @@ namespace PeopleSync.Customization
                 var rows = sheetData.Descendants<Row>();
                 if (!(rows != null && rows.Any())) return result;
                 var header = rows.ElementAt(0);
+
                 foreach (var row in rows)
                 {
                     if (row.RowIndex.Value == 1) continue;
                     var entry = new Dictionary<string, string>();
-                    for (var i = 0; i < row.Descendants<Cell>().Count(); i++)
+                    var cells = SpreadSheetHelper.GetRowCells(row);
+                    var index = 0;
+                    foreach (var cell in cells)
                     {
-                        var key = GetCellValue(spreadSheetDocument, header.Descendants<Cell>().ElementAt(i));
-                        var val = GetCellValue(spreadSheetDocument, row.Descendants<Cell>().ElementAt(i));
+                        if (index >= header.Descendants<Cell>().Count()) break;
+
+                        var key = GetCellValue(spreadSheetDocument, header.Descendants<Cell>().ElementAt(index));
+                        var val = GetCellValue(spreadSheetDocument, cell);
+
+                        if (MappingFields.TryGetValue(key, out var mappedKey))
+                        {
+                            key = mappedKey;
+                        }
                         entry.Add(key.Replace("(", "").Replace(")", ""), val);
+                        index++;
                     }
-                    entry.Add("objectId", entry["EmployeeID"]);
+
+                    entry.Add("objectId", entry["employeeId"]);
                     entry.Add("odata.type", "Microsoft.DirectoryServices.User");
+                    entry.Add("AccountEnabled", "True");
+                    entry.Add("CompanyName", "CLA");
+                    entry.Add("DirSyncEnabled", "True");
+                    entry.Add("MailNickName", entry["mail"].Split('@')[0]);
+                    entry.Add("userPrincipalName", entry["mail"]);
+                    entry.Add("ObjectType", "User");
+                    entry.Add("UserType", "Member");
                     result.Add(entry);
                 }
+
             }
             return result;
         }
-
         private static string GetCellValue(SpreadsheetDocument document, Cell cell)
         {
             var stringTablePart = document.WorkbookPart.SharedStringTablePart;
@@ -130,6 +180,58 @@ namespace PeopleSync.Customization
                 return stringTablePart.SharedStringTable.ChildElements[Int32.Parse(value)].InnerText;
             }
             return value;
+        }
+    }
+
+    //https://stackoverflow.com/questions/3837981/reading-excel-open-xml-is-ignoring-blank-cells/3981249
+    public class SpreadSheetHelper
+    {
+        ///<summary>returns an empty cell when a blank cell is encountered
+        ///</summary>
+        public static IEnumerable<Cell> GetRowCells(Row row)
+        {
+            var currentCount = 0;
+            foreach (var cell in row.Descendants<Cell>())
+            {
+                var columnName = GetColumnName(cell.CellReference);
+                var currentColumnIndex = ConvertColumnNameToNumber(columnName);
+                for (; currentCount < currentColumnIndex; currentCount++)
+                {
+                    yield return new Cell();
+                }
+                yield return cell;
+                currentCount++;
+            }
+        }
+
+        /// <summary>
+        /// Given a cell name, parses the specified cell to get the column name.
+        /// </summary>
+        /// <param name="cellReference">Address of the cell (ie. B2)</param>
+        /// <returns>Column Name (ie. B)</returns>
+        public static string GetColumnName(string cellReference)
+        {
+            // Match the column name portion of the cell name.
+            var regex = new Regex("[A-Za-z]+");
+            var match = regex.Match(cellReference);
+            return match.Value;
+        }
+
+        /// <summary>
+        /// Given just the column name (no row index),
+        /// it will return the zero based column index.
+        /// </summary>
+        /// <param name="columnName">Column Name (ie. A or AB)</param>
+        /// <returns>Zero based index if the conversion was successful</returns>
+        /// <exception cref="ArgumentException">thrown if the given string
+        /// contains characters other than uppercase letters</exception>
+        public static int ConvertColumnNameToNumber(string columnName)
+        {
+            var alpha = new Regex("^[A-Z]+$");
+            if (!alpha.IsMatch(columnName)) throw new ArgumentException();
+            var colLetters = columnName.ToCharArray();
+            Array.Reverse(colLetters);
+            return colLetters.Select((letter, i) => i == 0 ? letter - 65 : letter - 64).Select((current, i) => current * (int)Math.Pow(26, i)).Sum();
         }
     }
 }
