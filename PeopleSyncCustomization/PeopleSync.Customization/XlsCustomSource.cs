@@ -10,6 +10,9 @@ using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
+using System.Net;
+using System.IO;
+using Newtonsoft.Json;
 
 namespace PeopleSync.Customization
 {
@@ -51,7 +54,18 @@ namespace PeopleSync.Customization
         }
         public QueryResult QueryUsers(string resourceSet, string nextLink, ICollection<string> objectClassList, ICollection<string> propertyList)
         {
-            var changes = ReadFile("C:\\temp\\sample.xlsx");
+            var localFile = "C:\\temp\\sample.xlsx";
+
+            var ftpConfig = Path.Combine(Directory.GetCurrentDirectory(), "ftp.json");
+            if (File.Exists(ftpConfig))
+            {
+                var ftpContent = File.ReadAllText(ftpConfig);
+                var ftpconfig = JsonConvert.DeserializeObject<FtpConfig>(ftpContent);
+                var localfolder = ftpconfig.LocalFolder;
+                DownloadFtpFile(ftpconfig.FtpUri, localfolder, ftpconfig.FtpUsername, ftpconfig.FtpPassword, ftpconfig.FileName);
+                localFile = localfolder + "/" + ftpconfig.FileName;
+            }
+            var changes = ReadFile(localFile);
             var array = JArray.FromObject(changes);
             return new QueryResult(array, false, "");
         }
@@ -152,7 +166,7 @@ namespace PeopleSync.Customization
                         {
                             key = mappedKey;
                         }
-                        entry.Add(key.Replace("(", "").Replace(")", ""), val);
+                        entry.Add(key.Replace("(", "").Replace(")", "").Replace(" ", ""), val);
                         index++;
                     }
 
@@ -167,7 +181,6 @@ namespace PeopleSync.Customization
                     entry.Add("UserType", "Member");
                     result.Add(entry);
                 }
-
             }
             return result;
         }
@@ -181,8 +194,41 @@ namespace PeopleSync.Customization
             }
             return value;
         }
-    }
+        private static void DownloadFtpFile(string ftpFile, string localFile, string userName, string password, string fname)
+        {
+            try
+            {
+                var request = (FtpWebRequest)WebRequest.Create(ftpFile + "/" + fname);
+                request.Method = WebRequestMethods.Ftp.DownloadFile;
+                request.Credentials = new NetworkCredential(userName, password);
+                request.UsePassive = true;
+                request.UseBinary = true;
+                request.EnableSsl = false;
 
+                var response = (FtpWebResponse)request.GetResponse();
+                using (Stream responseStream = response.GetResponseStream())
+                {
+                    using (Stream fileStream = new FileStream(@localFile + "/" + fname, FileMode.CreateNew))
+                    {
+                        responseStream.CopyTo(fileStream);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+    }
+    public class FtpConfig
+    {
+        public string FtpUri { get; set; }
+        public string FileName { get; set; }
+        public string LocalFolder { get; set; }
+        public string FtpUsername { get; set; }
+        public string FtpPassword { get; set; }
+
+    }
     //https://stackoverflow.com/questions/3837981/reading-excel-open-xml-is-ignoring-blank-cells/3981249
     public class SpreadSheetHelper
     {
