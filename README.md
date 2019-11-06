@@ -36,3 +36,6 @@ If you run the sample as it is, then update the UNITY.CONFIG as shown below
  &lt;register type="IRepository[UserToken]" mapTo="Akumina.Samples.TokenStore.NtFileTokenStore, Akumina.Samples.TokenStore" /&gt;
  
  NOTE:  This sample has path hard coded to c:\\Temp\\ , change this path to your desired path before compilation.
+ 
+ <b>Web API Sample</b>
+ Copy Akumina.*.dll from your website bin directory, packages/akumina folder
