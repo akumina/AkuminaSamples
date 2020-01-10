@@ -34,7 +34,7 @@ namespace Sample.Web.Api.Controllers
         {
             try
             {
-                var key = InterChangeKeys.Get($"Massmutual.Web.Api.Get:", listName, id);
+                var key = InterChangeKeys.Get($"YoucCompany.Web.Api.Get:", listName, id);
                 var queryResponse = AppManager.Caching.Get<string>(key);
                 var cacheMiss = false;
                 if (string.IsNullOrEmpty(queryResponse))
