@@ -1,22 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Akumina.PeopleSync.Core;
+﻿using Akumina.PeopleSync.Core;
 using Akumina.PeopleSync.Core.Entities;
+using Akumina.PeopleSync.Core.Enums;
 using Akumina.PeopleSync.Core.Implementation;
 using Akumina.PeopleSync.Core.Interfaces;
-using System.Linq;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
-using Newtonsoft.Json.Linq;
-using System.Text.RegularExpressions;
-using System.Net;
-using System.IO;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace PeopleSync.Customization
 {
-    public class XlsCustomSource : AadSyncBase, ISyncSource
+    public class XlsCustomSource : SyncBase, ISyncSource
     {
         private static readonly Dictionary<string, string> MappingFields = new Dictionary<string, string>()
         {
@@ -75,62 +76,67 @@ namespace PeopleSync.Customization
             return null;
         }
 
-        public string FetchGroupExtensions(string lastExtensionLink, List<KeyValuePair<string, (string CreationDate, string Visibility, string Tags, string Types)>> groupExtensions)
+        public string FetchGroupExtensions(string lastExtensionLink, GroupExtensionTarget targets, List<KeyValuePair<string, (string CreationDate, string Visibility, string Tags, string Types)>> groupExtensions)
         {
             return "";
         }
 
-        public Dictionary<string, string> GetData(string objectId, dynamic client, SyncTask.ProcessTask callback)
+        public Dictionary<string, string> GetData(string objectId, SyncTask.ProcessTask callback)
         {
             return new Dictionary<string, string>();
         }
 
-        public async Task<Dictionary<string, string>> GetAssignedLicenses(string objectId, dynamic client)
+        public async Task<Dictionary<string, string>> GetAssignedLicenses(string objectId)
         {
             return await Task.Run(() => new Dictionary<string, string>());
         }
 
-        public async Task<Dictionary<string, string>> GetAppRoleAssignments(string objectId, dynamic client)
+        public async Task<Dictionary<string, string>> GetAppRoleAssignments(string objectId)
         {
             return await Task.Run(() => new Dictionary<string, string>());
         }
 
-        public async Task<Dictionary<string, string>> GetDirectReports(string objectId, dynamic client)
+        public async Task<Dictionary<string, string>> GetDirectReports(string objectId)
         {
             return await Task.Run(() => new Dictionary<string, string>());
         }
 
-        public async Task<Dictionary<string, string>> GetOwnedDevices(string objectId, dynamic client)
+        public async Task<Dictionary<string, string>> GetOwnedDevices(string objectId)
         {
             return await Task.Run(() => new Dictionary<string, string>());
         }
 
-        public async Task<Dictionary<string, string>> GetRegisteredDevices(string objectId, dynamic client)
+        public async Task<Dictionary<string, string>> GetUserGroups(string objectId)
+        {
+            return await Task.Run(() => new Dictionary<string, string>());
+        }
+        
+        public async Task<Dictionary<string, string>> GetRegisteredDevices(string objectId)
         {
             return await Task.Run(() => new Dictionary<string, string>());
         }
 
-        public async Task<Dictionary<string, string>> GetExtendedProperties(string objectId, dynamic client)
+        public async Task<Dictionary<string, string>> GetExtendedProperties(string objectId)
         {
             return await Task.Run(() => new Dictionary<string, string>());
         }
 
-        public async Task<Dictionary<string, string>> GetManager(string objectId, dynamic client)
+        public async Task<Dictionary<string, string>> GetManager(string objectId)
         {
             return await Task.Run(() => new Dictionary<string, string>());
         }
 
-        public async Task<Dictionary<string, string>> GetGroupMembers(string objectId, dynamic client)
+        public async Task<QueryResult> GetGroupMembers(string objectId, string nextLink)
+        {
+            return await Task.Run(() => new QueryResult(new Dictionary<string, string>(), false, nextLink));
+        }
+
+        public async Task<Dictionary<string, string>> GetExtendedPropertiesForGroup(string objectId)
         {
             return await Task.Run(() => new Dictionary<string, string>());
         }
 
-        public async Task<Dictionary<string, string>> GetExtendedPropertiesForGroup(string objectId, dynamic client)
-        {
-            return await Task.Run(() => new Dictionary<string, string>());
-        }
-
-        public async Task<Dictionary<string, string>> OnPremisesExtensionAttributes(string objectId, dynamic client)
+        public async Task<Dictionary<string, string>> OnPremisesExtensionAttributes(string objectId)
         {
             return await Task.Run(() => new Dictionary<string, string>());
         }
@@ -219,6 +225,7 @@ namespace PeopleSync.Customization
                 Console.WriteLine(ex.Message);
             }
         }
+
     }
     public class FtpConfig
     {

@@ -1,38 +1,33 @@
 ﻿using Akumina.PeopleSync.Core;
 using Akumina.PeopleSync.Core.Interfaces;
-using Newtonsoft.Json.Linq;
 
 namespace PeopleSync.Customization
 {
-    public class CustomFilter:ICustomFilter
+    public class CustomFilter: ICustomFilter
     {
-        public dynamic UserFilter(dynamic changes)
+        public dynamic UserFilter(dynamic item)
         {
             ConsoleLogger.ShowInfo("Processing changes from custom library...");
-            var result = new JArray();
-            var items = (JArray)changes;
-            foreach (var item in items)
-            {
-                if (item["givenName"] == null || item["givenName"] != null && string.IsNullOrEmpty(item["givenName"].ToString()))
-                    continue;
-                if (item["surname"] == null || item["surname"] != null && string.IsNullOrEmpty(item["surname"].ToString()))
-                    continue;
-                if (item["accountEnabled"] == null || item["accountEnabled"] != null && item["accountEnabled"].ToString().ToLower() != "true")
-                    continue;
-                if (item["userType"] == null || item["userType"] != null && item["userType"].ToString().ToLower() != "member")
-                    continue;
-                if (item["userPrincipalName"] == null || item["userPrincipalName"] != null && item["userPrincipalName"].ToString().StartsWith("ADMIN."))
-                    continue;
-                if (item["dirsyncenabled"] != null && item["dirsyncenabled"].ToString().Equals("false", System.StringComparison.InvariantCultureIgnoreCase))
-                    continue;
-                result.Add(item);
-            }
-            return result;
+            if (!item.ContainsKey("givenName") || string.IsNullOrEmpty(item["givenName"].ToString()))
+                return null; // returns null will skip processing the user or delete if the user already exists
+            if (!item.ContainsKey("surname") || string.IsNullOrEmpty(item["surname"].ToString()))
+                return null;
+            if (!item.ContainsKey("accountEnabled") || item["accountEnabled"].ToString().ToLower() != "true")
+                return null;
+            if (!item.ContainsKey("userType") || item["userType"].ToString().ToLower() != "member")
+                return null;
+            if (!item.ContainsKey("userPrincipalName") || item["userPrincipalName"].ToString().StartsWith("ADMIN."))
+                return null;
+            if (!item.ContainsKey("dirSyncEnabled") || item["dirSyncEnabled"].ToString().Equals("false", System.StringComparison.InvariantCultureIgnoreCase))
+                return null;
+
+            return item; // returns the item with updated property will process the item
         }
 
-        public dynamic GroupFilter(dynamic changes)
+        public dynamic GroupFilter(dynamic item)
         {
-            return changes;
+            return item;
         }
+
     }
 }
