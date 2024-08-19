@@ -40,3 +40,5 @@ If you run the sample as it is, then update the UNITY.CONFIG as shown below
  <b>Web API Sample</b>
  
  Copy Akumina.*.dll from your website bin directory, packages/akumina folder
+
+ Refer document [Adding optional claims and custom scope in Access token.pdf](https://github.com/adansari/AkuminaSamples/blob/8b637eb8af2eb2c9b63bf5c995430fd93dbc07e5/Adding%20optional%20claims%20and%20custom%20scope%20in%20Access%20token.pdf) for configuring the additional claims and scope.

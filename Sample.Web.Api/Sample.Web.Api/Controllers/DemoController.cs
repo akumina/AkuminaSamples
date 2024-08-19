@@ -1,10 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -14,11 +12,11 @@ using Akumina.Common.Enums;
 using Akumina.Common.Interfaces.Repository;
 using Akumina.DataHub.Web.Api.Controllers;
 using Akumina.Interchange.Core;
+using Akumina.Interchange.Services.OAuth2.JwtToken;
 using Akumina.Interchange.Web.Utility;
 using Akumina.Interchange.Web.Utility.Filters;
 using Akumina.Logging;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Sample.Web.Api.Controllers
 {
@@ -74,6 +72,35 @@ namespace Sample.Web.Api.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("TestOptionalClaims")]
+        [AkExecutionTime]
+        public async Task<HttpResponseMessage> TestOptionalClaims(string siteUrl)
+        {
+            try
+            {
+                // get api access token - when requesting Api token do make sure that Application ID URI is configured in tenant config
+                var apiAccessToken = await GetAccessToken(ResourceType.Api, siteUrl);
+
+                // get claims from token - parsing the token using App Manager's JwtTokenParser class
+                var tokenCalims = new JwtTokenParser().GetClaims(apiAccessToken);
+
+                // select claim type and its value for all the claims present in token as a list
+                var selectClaimTypeAndValue = tokenCalims.Select(c => new { ClaimName = c.Type, c.Value }).ToList();
+
+                var queryResponse = JsonConvert.SerializeObject(selectClaimTypeAndValue);
+
+                var httpResponse = Request.CreateResponse(HttpStatusCode.OK);
+                httpResponse.Content = new StringContent(queryResponse, Encoding.UTF8, "application/json");
+                return httpResponse;
+            }
+            catch (Exception e)
+            {
+                TraceEvents.Log.Error(e);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, e.ToString());
+            }
+        }
+
         [HttpPost]
         [Route("Validate")]
         [AkQueryKey]
@@ -98,24 +125,16 @@ namespace Sample.Web.Api.Controllers
 
         private async Task LogCurrentUserEmail(string siteUrl)
         {
-            var email = await GetGraphTokenClaimValue(siteUrl, "email");
+            // get api access token
+            var apiAccessToken = await GetAccessToken(ResourceType.Api, siteUrl);
+            var email = GetTokenClaimValue(apiAccessToken, "email");
 
             if(string.IsNullOrEmpty(email))
             {
-                email = await GetGraphTokenClaimValue(siteUrl, "upn");
+                email = GetTokenClaimValue(apiAccessToken, "upn");
             }
 
             TraceEvents.Log.Debug($"CurrentUser's Email: {email}");
-        }
-
-        private async Task<string> GetGraphTokenClaimValue(string siteUrl, string claimName)
-        {
-            // get graph access token
-            var graphAccessToken = await GetAccessToken(ResourceType.Graph, siteUrl);
-
-            // read claim value from token
-            var claimValue = GetTokenClaimValue(graphAccessToken, claimName);
-            return claimValue;
         }
 
         private string GetTokenClaimValue(string token, string claimName)
@@ -123,8 +142,7 @@ namespace Sample.Web.Api.Controllers
             var claimValue = "";
             try
             {
-                JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
-                var tokenCalims = jwtSecurityTokenHandler.ReadJwtToken(token).Claims;
+                var tokenCalims = new JwtTokenParser().GetClaims(token);
 
                 var claim = tokenCalims.FirstOrDefault(c => c.Type.Equals(claimName, StringComparison.CurrentCultureIgnoreCase));
 
