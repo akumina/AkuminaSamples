@@ -11,7 +11,7 @@ This sample project in .NET 8.0 empowers you to customize Akumina PeopleSync wit
 2. **Tenant-Specific Logic**: Implement your custom logic within these methods to:
    - Fetch additional data from external sources like Workday.
    - Apply conditions to filter data based on your criteria.
-3. **Vendor Folder**: This folder contains the `Akumina.Portal.Common` assembly, which provides the `ICustomFilter` interface. Use this interface to inherit the CustomFilter class and implement your custom logic.
+3. **Vendor Folder**: This folder contains the `Akumina.Portal.Common` assembly, which provides the `ICustomFilter` interface for Serverless version of PeopleSync. Use this interface to inherit the CustomFilter class and implement your custom logic.
 
 ## Benefits:
 * **Flexible and tailored data**: Adapt PeopleSync behavior to your specific data needs and user base.

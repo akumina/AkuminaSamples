@@ -1,0 +1,23 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/PeopleSync/Net8/Akumina.PeopleSync.Customization/obj/*
+/PeopleSync/Net8/Akumina.PeopleSync.Customization/bin/*
+/PeopleSync/Net8/.vs/Akumina.PeopleSync.Customization/v17/*
+/PeopleSync/Net8/.vs/Akumina.PeopleSync.Customization/FileContentIndex/*
+/PeopleSync/Net8/.vs/Akumina.PeopleSync.Customization/CopilotIndices/*
+/PeopleSync/Net8/.vs/ProjectEvaluation
+/PeopleSync/Net8/Serverless/Akumina.PeopleSync.Customization/obj/*
+/PeopleSync/Net8/Serverless/Akumina.PeopleSync.Customization/bin/*
+/PeopleSync/Net8/Serverless/.vs/Akumina.PeopleSync.Customization/v17/*
+/PeopleSync/Net8/Serverless/.vs/Akumina.PeopleSync.Customization/FileContentIndex/*
+/PeopleSync/Net8/Serverless/.vs/Akumina.PeopleSync.Customization/CopilotIndices/*
+/PeopleSync/Net8/Serverless/.vs/ProjectEvaluation
+/PeopleSync/Net8/Console/Akumina.PeopleSync.Customization/obj/*
+/PeopleSync/Net8/Console/Akumina.PeopleSync.Customization/bin/*
+/PeopleSync/Net8/Console/.vs/Akumina.PeopleSync.Customization/v17/*
+/PeopleSync/Net8/Console/.vs/Akumina.PeopleSync.Customization/FileContentIndex/*
+/PeopleSync/Net8/Console/.vs/Akumina.PeopleSync.Customization/CopilotIndices/*
+/PeopleSync/Net8/Console/.vs/ProjectEvaluation
+/PeopleSync/Net8/Console/.vs/Akumina.PeopleSync.Customization/DesignTimeBuild/*
